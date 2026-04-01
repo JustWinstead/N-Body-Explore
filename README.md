@@ -4,7 +4,10 @@ An application which models and renders the gravitational interactions of celest
 
 ## Equations Used:
 
-- Newtonian Equations of Motion
-    + Newtonian Acceleration: $ \"q_i = \sum_{j \neq i}^{N} \frac{G m_j \left ( q_j - q_i \right ) }{ ||q_j - q_i||^3 } $
-- Gravitational Force Equation
+### Newtonian Acceleration:
 
+$$\ddot{q}\_i = \sum_{j \neq i}^{N} G m_j \frac{q_j - q_i}{ \left\Vert q_j - q_i\right\Vert ^3 }$$
+
+### Newtonian Gravitational Force:
+
+$$F_21 = -G \frac{m_1 m_2}{ \left\vert r_21 \right\vert ^3 } r_21 $$
