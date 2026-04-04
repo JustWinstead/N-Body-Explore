@@ -10,4 +10,4 @@ $$\ddot{q}\_i = \sum_{j \neq i}^{N} G m_j \frac{q_j - q_i}{ \left\Vert q_j - q_i
 
 ### Newtonian Gravitational Force:
 
-$$F_21 = -G \frac{m_1 m_2}{ \left\vert r_21 \right\vert ^3 } r_21 $$
+$$F_{21} = -G \frac{m_1 m_2}{ r_{21}^2 } $$
