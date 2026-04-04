@@ -22,3 +22,6 @@ def newtAcceleration(system, i):
         # defining placeholder variables is for cowards
         accel += ( G * j.mass * (j.pos - i.pos) ) / np.linalg.norm(j.pos - i.pos)**3 
     return accel
+
+def newtGravForce(i, j):
+    return -1 * G * i.mass * j.mass / (i.pos - j.pos)**2
