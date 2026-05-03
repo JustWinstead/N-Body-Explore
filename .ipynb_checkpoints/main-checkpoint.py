@@ -20,36 +20,8 @@ def newtAcceleration(system, i):
         if j == i:
             continue # Guard to prevent divide by zero (if qi = qj, then diff = 0)
         # defining placeholder variables is for cowards
-        #F = ma -> a = F/m which cancels its own mass out
-        accel += ( G * j.mass ) / (np.linalg.norm(j.pos - i.pos)**2 )
+        accel += ( G * j.mass * (j.pos - i.pos) ) / np.linalg.norm(j.pos - i.pos)**3 
     return accel
 
-def magnitude(vec):
-    '''
-    The input vector should be an array with x,y,z components
-    '''
-    return np.sqrt(np.sum(vec**2))
-    
-def gravForceMagnitude(i, j):
-    separation = magnitude(i.pos,j.pos)
-    return  G * i.mass * j.mass / (separation)**2
-    
-def unitDirectionVector(i,j):
-    '''
-    
-    '''
-    direc = j.pos-i.pos
-    unit_vec = direc/magnitude(direc)
-    return unit_vec
-def gravForceVector(i,j):
-    '''
-    
-    '''
-    separation = j.pos-i.pos
-    force = gravForceMagnitude(i,j)
-    direction = unitDirectionVector(i,j)
-    return force*direction
-
-def calculateForceVector(system):
-    
-    
+def newtGravForce(i, j):
+    return -1 * G * i.mass * j.mass / (i.pos - j.pos)**2
