@@ -10,6 +10,7 @@ class Body:
         self.pos = pos
         self.velo = velo
         self.accel = accel
+    force = 0
 
 # Newtonian accleration
 #   system is a list (or some other data structure) of body objects   
@@ -51,5 +52,14 @@ def gravForceVector(i,j):
     return force*direction
 
 def calculateForceVector(system):
-    
-    
+    calculatedVectors = {}
+
+    for i in range(len(system)):
+        for j in range(len(range(system)):
+            if i != j:
+                hashname = hash("".join(sorted(i.name + j.name)))
+                if hashname in calculatedVectors:
+                    i.force += calculatedVectors[hashname] * -1
+                else:
+                    i.force += gravForceVector(i, j)
+                    calculatedVectors[hashname] = i.force
