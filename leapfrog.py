@@ -1,10 +1,8 @@
 import numpy as np
 
 def updateSystem(system, dt):
-    newSystem = {}
+    calculateForceVectors(system)
+    
     for body in system:
-        
+        body.accel = body.force / body.mass
 
-        newSystem.append(body)
-
-    return newSystem

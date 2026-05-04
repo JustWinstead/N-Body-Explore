@@ -8,7 +8,7 @@ G = 6.6743e-11 # Grav constant: 6.6743 x 10^(-11) m^3/(kg * s^2)
 
 # Body object to be used in equations
 class Body:
-    def __init__(self, name, mass, pos, velo):
+    def __init__(self, name: str, mass: float, pos: np.ndarray, velo: np.ndarray) -> None:
         self.name = name
         self.mass = mass
         self.pos = pos
@@ -16,25 +16,25 @@ class Body:
     force = 0
     accel = 0
 
-def magnitude(vec):
+def magnitude(vec: np.ndarray) -> np.ndarray:
     return np.sqrt(np.sum(vec**2))
     
-def gravForceMagnitude(i, j):
+def gravForceMagnitude(i: Body, j: Body) -> np.ndarray:
     separation = magnitude(i.pos,j.pos)
     return  G * i.mass * j.mass / (separation)**2
     
-def unitDirectionVector(i,j):
+def unitDirectionVector(i: Body, j: Body) -> np.ndarray:
     direc = j.pos-i.pos
     unit_vec = direc/magnitude(direc)
     return unit_vec
 
-def gravForceVector(i,j):
+def gravForceVector(i: Body, j: Body) -> np.ndarray:
     separation = j.pos-i.pos
     force = gravForceMagnitude(i,j)
     direction = unitDirectionVector(i,j)
     return force*direction
 
-def calculateForceVectors(system):
+def calculateForceVectors(system) -> None:
     calculatedForces = {}
     for i in system:
         for j in system:
@@ -43,10 +43,11 @@ def calculateForceVectors(system):
                 if hashname in calculatedForces:
                     i.force += calculatedForces[hashname] * -1
                 else:
-                    i.force += gravForceVector(i, j)
-                    calculatedForces[hashname] = i.force
+                    f = gravForceVector(i, j)
+                    i.force += f
+                    calculatedForces[hashname] = f
 
-def integrator(system, dt):
+def integrator(system: List[Body], dt: int) -> None:
     calculateForceVectors(system)
 
     for i in system:
@@ -56,4 +57,3 @@ def integrator(system, dt):
 
 # TODO: write function which generates body from system where the pos is the center of mass of the system 
 # Hard part: figuring out when to abstract and unabstract systems
-
