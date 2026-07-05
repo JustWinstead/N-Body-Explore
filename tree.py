@@ -1,45 +1,87 @@
+# pyright: strict
+from __future__ import annotations
+from typing import Optional
+# ^ Kawika's typing crutch, DO NOT TOUCH
+
+import numpy as np
+import numpy.typing as npt
+
 import main
 
+# important for indexing and iterating through subnodes
+# basically creates an 8x3 matrix of vectors for each of 1 and -1
+VEC_MATRIX: list[npt.NDArray[np.float32] = [
+    np.array([1.0, 1.0, 1.0]),
+    np.array([1.0, 1.0, -1.0]),
+    np.array([1.0, -1.0, 1.0]),
+    np.array([-1.0, 1.0, 1.0]),
+    np.array([-1.0, -1.0, 1.0]),
+    np.array([-1.0, 1.0, -1.0]),
+    np.array([1.0, -1.0, -1.0]),
+    np.array([-1.0, -1.0, -1.0]),
+]
+
 class Node:
-    mass = # a numpy array
-    pos = # another numpy array
-    body = None # Nodes start with zero  
-    
-    # And then the branch nodes, p means positive, n means negative
-    pxpypz = None
-    nxpypz = None
-    pxnypz = None
-    pxpynz = None
-    pxnynz = None
-    nxpynz = None
-    nxnypz = None
-    nxnynz = None
+    # locks class dictionary for memory efficiency
+    __slots__ = ['com', 'pos', 'body', 'depth', 'nodes', 'size'] 
 
-    # We call this function whenever we want a new node
-    def __init__(coord): # Do we include old node's coordinate?
-        self.pos = coord
-        # And then we include some math to determine
+    com: float
+    body: Body
+    nodes: list[Node]
+    pos: npt.NDArray[np.float32]
+    depth: int
+    size: float
 
-    def split():
-        # Create a new Node for each of the branch node variables
+    # We call this function whenever we want a new node, where all values are calculated
+    def __init__(self, pos: npt.NDArray[np.float32], depth: int, size: float):
+        self.pos = pos
+        self.depth = depth
+        self.size = size
 
-# This keeps track of all data and the root of the tree
+        self.com = 0.0
+        self.depth = 0
+        self.nodes = [None] * 8
+
+    def split(self):
+        # We can calculate new node position by doing:
+        # pos = (x +- l/2^(d+2), y +- l/2^(d+2), z +- l/2^(d+2))
+        # where l is the size value of the node and d is depth + 1 (children are 1 deeper)
+        offset = self.size / (1 << (self.depth + 2))
+        # bitshift to mimic 2^x ^ 
+
+        for i in range(8):
+            # get new coordinates and create new Node
+            new_pos = self.pos + (VEC_MATRIX[i] * offset)
+            self.nodes[i] = Node(new_pos, self.depth + 1, self.size / 2)
+
+
 class Tree:
-    bodies: None # an array of the bodies in the system
-    root: None # the root node of the tree
+    __slots__ = ['bodies', 'root', 'size']
 
-    def ___init__(system): # where system is the array of bodies
+    bodies: list[main.Body]
+    root: Optional[Node]
+    size: float
+
+    def __init__(self, system: list[Body]):
         self.bodies = system
+        # TODO: calculate from max x, y, and z
+        self.size = 0.0
+        self.root = None
 
         for body in bodies:
             self.add(body)
 
-    def add(body):
+    def add(self, body: Body):
         if self.root is None:
-            self.root = Node(0) # 0 is a stand-in for a numpy array of the coords (0, 0, 0)
+            self.root = Node(np.zeros(3, dtype=np.float32)), 0, self.size)
         
         current = self.root
-        for current.body is not None:
-            if current.pxpypz is None:
+        while current.body is not None:
+            if current.nodes[0] is None:
                 current.split()
-            # and then some math determining which node to set as current
+        
+        # TODO: and then some math determining which node to set as current
+
+        current.body = body
+        # TODO: calculate center of mass from body mass and position
+        current.com = body.mass

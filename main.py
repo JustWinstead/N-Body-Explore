@@ -1,20 +1,31 @@
-# Definitions:
-#   System: list of bodies
-#   Body: class object consisting of physical properties, ie mass, position, volume
+# pyright: strict
+from __future__ import annotations
+from typing import Optional
+# ^ Kawika's typing crutch, DO NOT TOUCH
 
 import numpy as np
+import numpy.typing as npt
 import math
 G = 6.6743e-11 # Grav constant: 6.6743 x 10^(-11) m^3/(kg * s^2)
 
-# Body object to be used in equations
 class Body:
-    def __init__(self, name: str, mass: float, pos: np.ndarray, velo: np.ndarray) -> None:
+    __slots__ = ['name', 'mass', 'pos', 'velo', 'accel', 'forces']
+
+    name: str
+    mass: float
+    pos: npt.NDArray[np.float32]
+    velo: npt.NDArray[np.float32]
+    accel: npt.NDArray[np.float32]
+    force: npt.NDArray[np.float32]
+
+    def __init__(self, name: str, mass: float, pos: npt.NDArray[np.float32], velo: npt.NDArray[np.float32]) -> None:
         self.name = name
         self.mass = mass
         self.pos = pos
         self.velo = velo
-    force = 0
-    accel = 0
+
+        self.accel = np.zeros(3, dtype=np.float32)
+        self.force = np.zeros(3, dtype=np.float32)
 
 def magnitude(vec: np.ndarray) -> np.ndarray:
     return np.sqrt(np.sum(vec**2))
